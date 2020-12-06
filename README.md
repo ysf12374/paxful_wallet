@@ -19,7 +19,8 @@ A wallet consists of the following:
     "email": "mark@henry.com",
     "private_key": "e21fd13fad152c34ea8d05e765f1634462257fce05ac6b882f120736b6723af4",
     "public_key": "2UcifxLWA53cHLnYbQbfPrJLH8KkNuuUK9SR",
-    "private_key_wif": "5KXsd5ktydxsCfknkf5Qq4dWdYhEPzu3HMcAL5Ec7hjk7PNjSV5"
+    "private_key_wif": "5KXsd5ktydxsCfknkf5Qq4dWdYhEPzu3HMcAL5Ec7hjk7PNjSV5",
+    "address": "1EdRjzGk8AWAb6xMYZGBM9GCPqAu6eZqbY"
 }
 ```
 ### Installation 
