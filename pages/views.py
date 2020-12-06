@@ -169,7 +169,7 @@ def create(request):
       w = Wallet.objects.create(wallet_id=wallet_id,
             name=name, email=email)
       w.save()
-
+      logger.info(f"[{datetime.now()}] [saved] [{name}] [{email}] in Wallet Table")
       return JsonResponse({'success':True,
               "wallet_id":wallet_id,
               "name":name, "email":email})
@@ -207,6 +207,8 @@ def generate(request):
         address=address_byt.decode(),
         date_updated=datetime.now())
       w_add.save()
+      logger.info(f"[{datetime.now()}] [saved] [{b.wallet_id}] in Wallet_Address Table")
+
       b.wallet_address.add(w_add)
       w_keys = Wallet_Keys.objects.create(wallet_id=wallet_id,
             private_key=private_key_hex.decode(),
@@ -214,9 +216,13 @@ def generate(request):
             private_key_wif=private_key_wif_hex.decode(),
             date_updated=datetime.now())
       w_keys.save()
+      logger.info(f"[{datetime.now()}] [saved] [{wallet_id}] in Wallet_Keys Table")
+
       w_acc=Wallet_Account.objects.create(wallet_id=wallet_id,
             currency='USD')
       w_acc.save()
+      logger.info(f"[{datetime.now()}] [saved] [{wallet_id}] in Wallet_Account Table")
+
       b.wallet_account.add(w_acc)
       b.wallet_keys.add(w_keys)
       return JsonResponse({'success':True,
@@ -260,6 +266,8 @@ def api(request):
             api_key=api_key.decode(),
             api_pin=api_pin.decode())
       w.save()
+      logger.info(f"[{datetime.now()}] [saved] [{a.wallet_id}] in Wallet_API Table")
+
       a.wallet_api.add(w)
       return JsonResponse({'success':True,
         'API Key':api_key_,
@@ -267,59 +275,6 @@ def api(request):
     except Exception as e:
       logger.error(f"[{datetime.now()}] [api] [{private_key_wif_hex_}] {e} ")
       return HttpResponse(status=500)
-
-
-@csrf_exempt
-def create_address(request):
-    api_key_=request.GET.get('API_Key', 'NoKey')
-    api_pin_=request.GET.get('API_PIN', 'NoPin')
-    try:
-      if (api_key_!='NoKey' and api_pin_!='NoPin' and api_pin_!='NoPublicKey'):
-        api_key=obscure(api_key_.encode())
-        api_pin=obscure(api_pin_.encode())
-        a = Wallet_API.objects.filter(api_key=api_key.decode(),
-          api_pin=api_pin.decode()).order_by('date_updated').first()
-      else:
-        return JsonResponse({'success':False,
-          "error":"Please Enter API_Key and API_PIN"})
-      wallet=Wallet.objects.filter(wallet_id=a.wallet_id).order_by('date_created').first()
-      b = Wallet_Keys.objects.filter(wallet_id=a.wallet_id).order_by('date_created').first()
-      public_key_=b.public_key
-      address_str=address_(public_key_.encode())
-      address_byt=obscure(address_str.encode())
-      w=Wallet_Address(wallet_id=a.wallet_id,
-        address=address_byt.decode(),
-        date_updated=datetime.now())
-      w.save()
-      wallet.wallet_address.add(w)
-      return JsonResponse({'success':True,
-        'address':address_str})
-    except Exception as e:
-      logger.error(f"[{datetime.now()}] [api] [{api_key_}] [{api_pin_}] {e} ")
-      return HttpResponse(status=500)
-
-# @csrf_exempt
-# def create_session(request):
-#     api_key=request.GET.get('API_Key', 'NoKey')
-#     api_pin=request.GET.get('API_PIN', 'NoPin')
-#     now = datetime.now()
-#     now_plus_10 = now + timedelta(minutes = 10)
-#     if (api_key_!='NoKey' and api_pin_!='NoPin' and api_pin_!='NoPublicKey'):
-#       api_key_binary = "{:08b}".format(int(api_key.encode('utf-8').hex(),16))
-#       api_pin_binary = "{:08b}".format(int(api_pin.encode('utf-8').hex(),16))
-#       a = Wallet_API.objects.filter(api_key=api_key_binary.encode(),
-#         api_pin=api_pin_binary.encode()).order_by('date_updated').first()
-#     else:
-#       return JsonResponse({'success':False,
-#         "error":"Please Enter API_Key and API_PIN"})
-#     session_id = secrets.token_hex(16)
-#     w=Wallet_Sessions(wallet_id=a.wallet_id,
-#       expiry=now_plus_10,
-#       session_id=session_id)
-#     w.save()
-#     return JsonResponse({'success':True,
-#       'session_id':session_id})
-
 
 @csrf_exempt
 def transfer_funds(request,amount):
@@ -392,6 +347,7 @@ def transfer_funds(request,amount):
       w.save(update_fields=['amount'])
       t.save(update_fields=['amount'])
       c_.save(update_fields=['amount'])
+      logger.info(f"[{datetime.now()}] [updated] from-[{f.wallet_id}] to-[{t_deet.wallet_id}] in Wallet_Account Table")
 
       transaction_id = secrets.token_hex(16)
 
@@ -400,6 +356,8 @@ def transfer_funds(request,amount):
             transaction_id=transaction_id, transaction_amount=float(amount),
             transaction_currency='USD',
             commission=0.015*float(amount))
+      logger.info(f"[{datetime.now()}] [saved] [{f.wallet_id}] in Wallet_Transactions Table")
+
       return JsonResponse({'success':True,
         'to':t_deet.wallet_id,
         'from':f.wallet_id,
@@ -426,6 +384,8 @@ def details_long(request):
       a=Wallet_Account.objects.filter(wallet_id=w.wallet_id).order_by('date_updated').first()
 
       api=Wallet_API.objects.filter(wallet_id=w.wallet_id).order_by('date_updated').first()
+      logger.info(f"[{datetime.now()}] [queried] [{w.wallet_id}]")
+
       return JsonResponse({'success':True,
               "wallet_id":w.wallet_id,
               "name":w.name, "email":w.email,
@@ -462,6 +422,8 @@ def details_short(request):
       private_key_wif=unobscure(private_key_wif_.encode())
       address_=ad.address
       address=unobscure(address_.encode())
+      logger.info(f"[{datetime.now()}] [queried] [{w.wallet_id}]")
+
       return JsonResponse({'success':True,
               "wallet_id":w.wallet_id,
               "name":w.name, "email":w.email,
@@ -486,6 +448,59 @@ def details_short(request):
 
 
 
+
+
+
+# @csrf_exempt
+# def create_address(request):
+#     api_key_=request.GET.get('API_Key', 'NoKey')
+#     api_pin_=request.GET.get('API_PIN', 'NoPin')
+#     try:
+#       if (api_key_!='NoKey' and api_pin_!='NoPin' and api_pin_!='NoPublicKey'):
+#         api_key=obscure(api_key_.encode())
+#         api_pin=obscure(api_pin_.encode())
+#         a = Wallet_API.objects.filter(api_key=api_key.decode(),
+#           api_pin=api_pin.decode()).order_by('date_updated').first()
+#       else:
+#         return JsonResponse({'success':False,
+#           "error":"Please Enter API_Key and API_PIN"})
+#       wallet=Wallet.objects.filter(wallet_id=a.wallet_id).order_by('date_created').first()
+#       b = Wallet_Keys.objects.filter(wallet_id=a.wallet_id).order_by('date_created').first()
+#       public_key_=b.public_key
+#       address_str=address_(public_key_.encode())
+#       address_byt=obscure(address_str.encode())
+#       w=Wallet_Address(wallet_id=a.wallet_id,
+#         address=address_byt.decode(),
+#         date_updated=datetime.now())
+#       w.save()
+#       wallet.wallet_address.add(w)
+#       return JsonResponse({'success':True,
+#         'address':address_str})
+#     except Exception as e:
+#       logger.error(f"[{datetime.now()}] [api] [{api_key_}] [{api_pin_}] {e} ")
+#       return HttpResponse(status=500)
+
+# @csrf_exempt
+# def create_session(request):
+#     api_key=request.GET.get('API_Key', 'NoKey')
+#     api_pin=request.GET.get('API_PIN', 'NoPin')
+#     now = datetime.now()
+#     now_plus_10 = now + timedelta(minutes = 10)
+#     if (api_key_!='NoKey' and api_pin_!='NoPin' and api_pin_!='NoPublicKey'):
+#       api_key_binary = "{:08b}".format(int(api_key.encode('utf-8').hex(),16))
+#       api_pin_binary = "{:08b}".format(int(api_pin.encode('utf-8').hex(),16))
+#       a = Wallet_API.objects.filter(api_key=api_key_binary.encode(),
+#         api_pin=api_pin_binary.encode()).order_by('date_updated').first()
+#     else:
+#       return JsonResponse({'success':False,
+#         "error":"Please Enter API_Key and API_PIN"})
+#     session_id = secrets.token_hex(16)
+#     w=Wallet_Sessions(wallet_id=a.wallet_id,
+#       expiry=now_plus_10,
+#       session_id=session_id)
+#     w.save()
+#     return JsonResponse({'success':True,
+#       'session_id':session_id})
 
 
 
