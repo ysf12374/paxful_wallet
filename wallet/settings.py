@@ -22,12 +22,13 @@ if not os.path.isfile('key.key'):
     file = open('key.key', 'wb')
     file.write(key)  
     file.close()
-
+else:
+    key=open("key.key", "rb").read()
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'y6-y0!^3p-7t&^&&zc(z_kv0q*_+yvqlms7=!gc@ccr#31+@%l'
+SECRET_KEY = key#'y6-y0!^3p-7t&^&&zc(z_kv0q*_+yvqlms7=!gc@ccr#31+@%l'
  
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = True
