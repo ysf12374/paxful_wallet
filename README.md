@@ -23,6 +23,12 @@ A wallet consists of the following:
     "address": "1EdRjzGk8AWAb6xMYZGBM9GCPqAu6eZqbY"
 }
 ```
+# Database Schema
+![alt text](https://github.com/ysf12374/paxful_wallet/blob/main/database_model.png?raw=true)
+
+
+
+
 ### Installation 
 
 Install and run with docker and docker-compose->
