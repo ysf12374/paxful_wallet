@@ -155,28 +155,27 @@ def create(request):
     if name=='NoName' or email=='NoEmail':
       return JsonResponse({'success':False,
         "error":"Please Enter Name and Email"})
-    # try:
-    b = Wallet.objects.filter(name=name,
-      email=email).order_by('date_created').first()
     try:
-      wallet_id=b.wallet_id
-    except:
-      wallet_id=False
-    if wallet_id:
-      return JsonResponse({'success':False,
-        "error":"Please Enter New Name and Email"})
-    wallet_id=str(uuid.uuid4().fields[-1])[:51]
-    w = Wallet.objects.create(wallet_id=wallet_id,
-          name=name, email=email)
-    w.save()
+      b = Wallet.objects.filter(name=name,
+        email=email).order_by('date_created').first()
+      try:
+        wallet_id=b.wallet_id
+      except:
+        wallet_id=False
+      if wallet_id:
+        return JsonResponse({'success':False,
+          "error":"Please Enter New Name and Email"})
+      wallet_id=str(uuid.uuid4().fields[-1])[:51]
+      w = Wallet.objects.create(wallet_id=wallet_id,
+            name=name, email=email)
+      w.save()
 
-    return JsonResponse({'success':True,
-            "wallet_id":wallet_id,
-            "name":name, "email":email})
-    # except Exception as e:
-    #   logger.error(f"[{datetime.now()}] [create] [{name}] [{email}] {e} ")
-    #   return JsonResponse({'success':False,
-    #       "error":"Internal Server Error, Please contact support"})
+      return JsonResponse({'success':True,
+              "wallet_id":wallet_id,
+              "name":name, "email":email})
+    except Exception as e:
+      logger.error(f"[{datetime.now()}] [create] [{name}] [{email}] {e} ")
+      return HttpResponse(status=500)
 
 
 @csrf_exempt
@@ -186,51 +185,50 @@ def generate(request):
     if name=='NoName' or email=='NoEmail':
       return JsonResponse({'success':False,
         "error":"Please Enter Name and Email"})
-    # try:
-    b = Wallet.objects.filter(name=name,
-      email=email).order_by('date_created').first()
     try:
-      wallet_id=b.wallet_id
-    except:
-      wallet_id=False
-    if not wallet_id:
-      return JsonResponse({'success':False,
-        "error":"Name and Email doesnt exist"})
-    private_key_hex_ = generate_private_key()
-    public_key_hex_ = generate_public_key(private_key_hex_)
-    private_key_wif_hex_ = privToWif(private_key_hex_.decode())
-    private_key_hex = obscure(private_key_hex_)
-    public_key_hex = obscure(public_key_hex_)
-    private_key_wif_hex = obscure(private_key_wif_hex_.encode())
-    address_str=address_(public_key_hex_)
-    address_byt=obscure(address_str.encode())
-    w_add=Wallet_Address.objects.create(wallet_id=b.wallet_id,
-      address=address_byt.decode(),
-      date_updated=datetime.now())
-    w_add.save()
-    b.wallet_address.add(w_add)
-    w_keys = Wallet_Keys.objects.create(wallet_id=wallet_id,
-          private_key=private_key_hex.decode(),
-          public_key=public_key_hex.decode(),
-          private_key_wif=private_key_wif_hex.decode(),
-          date_updated=datetime.now())
-    w_keys.save()
-    w_acc=Wallet_Account.objects.create(wallet_id=wallet_id,
-          currency='USD')
-    w_acc.save()
-    b.wallet_account.add(w_acc)
-    b.wallet_keys.add(w_keys)
-    return JsonResponse({'success':True,
-            "wallet_id":wallet_id,
-            "name":name, "email":email,
-            "private_key":private_key_hex_.decode(),
-            "public_key":public_key_hex_.decode(),
-            "private_key_wif":private_key_wif_hex_,
-            "address":address_str})
-    # except Exception as e:
-    #   logger.error(f"[{datetime.now()}] [regenerate] [{name}] [{email}] {e} ")
-    #   return JsonResponse({'success':False,
-    #       "error":"Internal Server Error, Please contact support"})
+      b = Wallet.objects.filter(name=name,
+        email=email).order_by('date_created').first()
+      try:
+        wallet_id=b.wallet_id
+      except:
+        wallet_id=False
+      if not wallet_id:
+        return JsonResponse({'success':False,
+          "error":"Name and Email doesnt exist"})
+      private_key_hex_ = generate_private_key()
+      public_key_hex_ = generate_public_key(private_key_hex_)
+      private_key_wif_hex_ = privToWif(private_key_hex_.decode())
+      private_key_hex = obscure(private_key_hex_)
+      public_key_hex = obscure(public_key_hex_)
+      private_key_wif_hex = obscure(private_key_wif_hex_.encode())
+      address_str=address_(public_key_hex_)
+      address_byt=obscure(address_str.encode())
+      w_add=Wallet_Address.objects.create(wallet_id=b.wallet_id,
+        address=address_byt.decode(),
+        date_updated=datetime.now())
+      w_add.save()
+      b.wallet_address.add(w_add)
+      w_keys = Wallet_Keys.objects.create(wallet_id=wallet_id,
+            private_key=private_key_hex.decode(),
+            public_key=public_key_hex.decode(),
+            private_key_wif=private_key_wif_hex.decode(),
+            date_updated=datetime.now())
+      w_keys.save()
+      w_acc=Wallet_Account.objects.create(wallet_id=wallet_id,
+            currency='USD')
+      w_acc.save()
+      b.wallet_account.add(w_acc)
+      b.wallet_keys.add(w_keys)
+      return JsonResponse({'success':True,
+              "wallet_id":wallet_id,
+              "name":name, "email":email,
+              "private_key":private_key_hex_.decode(),
+              "public_key":public_key_hex_.decode(),
+              "private_key_wif":private_key_wif_hex_,
+              "address":address_str})
+    except Exception as e:
+      logger.error(f"[{datetime.now()}] [regenerate] [{name}] [{email}] {e} ")
+      return HttpResponse(status=500)
 
 @csrf_exempt
 def api(request):
@@ -240,89 +238,87 @@ def api(request):
     if name=='NoName' or email=='NoEmail':
       return JsonResponse({'success':False,
         "error":"Please Enter Name and Email"})
-    # try:
-    a = Wallet.objects.filter(name=name,
-      email=email).order_by('date_created').first()
-    if private_key_wif_hex_!='NoWif':
-      private_key_wif_hex = obscure(private_key_wif_hex_.encode())
-      k = Wallet_Keys.objects.filter(
-        private_key_wif=private_key_wif_hex.decode()).order_by('date_created').first()
-    else:
-      return JsonResponse({'success':False,
-        "error":"Please Enter WIF "})
-    if a.wallet_id!=k.wallet_id:
-      return JsonResponse({'success':False,
-        "error":"Private Key doesnt match the wallet"})
-    api_key_ = secrets.token_urlsafe(96)
-    api_key = obscure(api_key_.encode())
-    api_pin_ = secrets.token_hex(16)
-    api_pin = obscure(api_pin_.encode())
-    w = Wallet_API.objects.create(wallet_id=a.wallet_id,
-          date_updated=datetime.now(),
-          api_key=api_key.decode(),
-          api_pin=api_pin.decode())
-    w.save()
-    a.wallet_api.add(w)
-    return JsonResponse({'success':True,
-      'API Key':api_key_,
-      'API PIN':api_pin_})
-    # except Exception as e:
-    #   logger.error(f"[{datetime.now()}] [api] [{private_key_wif_hex_}] {e} ")
-    #   return JsonResponse({'success':False,
-    #       "error":"Internal Server Error, Please contact support"})
+    try:
+      a = Wallet.objects.filter(name=name,
+        email=email).order_by('date_created').first()
+      if private_key_wif_hex_!='NoWif':
+        private_key_wif_hex = obscure(private_key_wif_hex_.encode())
+        k = Wallet_Keys.objects.filter(
+          private_key_wif=private_key_wif_hex.decode()).order_by('date_created').first()
+      else:
+        return JsonResponse({'success':False,
+          "error":"Please Enter WIF "})
+      if a.wallet_id!=k.wallet_id:
+        return JsonResponse({'success':False,
+          "error":"Private Key doesnt match the wallet"})
+      api_key_ = secrets.token_urlsafe(96)
+      api_key = obscure(api_key_.encode())
+      api_pin_ = secrets.token_hex(16)
+      api_pin = obscure(api_pin_.encode())
+      w = Wallet_API.objects.create(wallet_id=a.wallet_id,
+            date_updated=datetime.now(),
+            api_key=api_key.decode(),
+            api_pin=api_pin.decode())
+      w.save()
+      a.wallet_api.add(w)
+      return JsonResponse({'success':True,
+        'API Key':api_key_,
+        'API PIN':api_pin_})
+    except Exception as e:
+      logger.error(f"[{datetime.now()}] [api] [{private_key_wif_hex_}] {e} ")
+      return HttpResponse(status=500)
 
 
 @csrf_exempt
 def create_address(request):
     api_key_=request.GET.get('API_Key', 'NoKey')
     api_pin_=request.GET.get('API_PIN', 'NoPin')
-    # try:
-    if (api_key_!='NoKey' and api_pin_!='NoPin' and api_pin_!='NoPublicKey'):
-      api_key=obscure(api_key_.encode())
-      api_pin=obscure(api_pin_.encode())
-      a = Wallet_API.objects.filter(api_key=api_key.decode(),
-        api_pin=api_pin.decode()).order_by('date_updated').first()
-    else:
-      return JsonResponse({'success':False,
-        "error":"Please Enter API_Key and API_PIN"})
-    wallet=Wallet.objects.filter(wallet_id=a.wallet_id).order_by('date_created').first()
-    b = Wallet_Keys.objects.filter(wallet_id=a.wallet_id).order_by('date_created').first()
-    public_key_=b.public_key
-    address_str=address_(public_key_.encode())
-    address_byt=obscure(address_str.encode())
-    w=Wallet_Address(wallet_id=a.wallet_id,
-      address=address_byt.decode(),
-      date_updated=datetime.now())
-    w.save()
-    wallet.wallet_address.add(w)
-    return JsonResponse({'success':True,
-      'address':address_str})
-    # except Exception as e:
-    #   logger.error(f"[{datetime.now()}] [api] [{api_key_}] [{api_pin_}] {e} ")
-    #   return JsonResponse({'success':False,
-    #       "error":"Internal Server Error, Please contact support"})
+    try:
+      if (api_key_!='NoKey' and api_pin_!='NoPin' and api_pin_!='NoPublicKey'):
+        api_key=obscure(api_key_.encode())
+        api_pin=obscure(api_pin_.encode())
+        a = Wallet_API.objects.filter(api_key=api_key.decode(),
+          api_pin=api_pin.decode()).order_by('date_updated').first()
+      else:
+        return JsonResponse({'success':False,
+          "error":"Please Enter API_Key and API_PIN"})
+      wallet=Wallet.objects.filter(wallet_id=a.wallet_id).order_by('date_created').first()
+      b = Wallet_Keys.objects.filter(wallet_id=a.wallet_id).order_by('date_created').first()
+      public_key_=b.public_key
+      address_str=address_(public_key_.encode())
+      address_byt=obscure(address_str.encode())
+      w=Wallet_Address(wallet_id=a.wallet_id,
+        address=address_byt.decode(),
+        date_updated=datetime.now())
+      w.save()
+      wallet.wallet_address.add(w)
+      return JsonResponse({'success':True,
+        'address':address_str})
+    except Exception as e:
+      logger.error(f"[{datetime.now()}] [api] [{api_key_}] [{api_pin_}] {e} ")
+      return HttpResponse(status=500)
 
-@csrf_exempt
-def create_session(request):
-    api_key=request.GET.get('API_Key', 'NoKey')
-    api_pin=request.GET.get('API_PIN', 'NoPin')
-    now = datetime.now()
-    now_plus_10 = now + timedelta(minutes = 10)
-    if (api_key_!='NoKey' and api_pin_!='NoPin' and api_pin_!='NoPublicKey'):
-      api_key_binary = "{:08b}".format(int(api_key.encode('utf-8').hex(),16))
-      api_pin_binary = "{:08b}".format(int(api_pin.encode('utf-8').hex(),16))
-      a = Wallet_API.objects.filter(api_key=api_key_binary.encode(),
-        api_pin=api_pin_binary.encode()).order_by('date_updated').first()
-    else:
-      return JsonResponse({'success':False,
-        "error":"Please Enter API_Key and API_PIN"})
-    session_id = secrets.token_hex(16)
-    w=Wallet_Sessions(wallet_id=a.wallet_id,
-      expiry=now_plus_10,
-      session_id=session_id)
-    w.save()
-    return JsonResponse({'success':True,
-      'session_id':session_id})
+# @csrf_exempt
+# def create_session(request):
+#     api_key=request.GET.get('API_Key', 'NoKey')
+#     api_pin=request.GET.get('API_PIN', 'NoPin')
+#     now = datetime.now()
+#     now_plus_10 = now + timedelta(minutes = 10)
+#     if (api_key_!='NoKey' and api_pin_!='NoPin' and api_pin_!='NoPublicKey'):
+#       api_key_binary = "{:08b}".format(int(api_key.encode('utf-8').hex(),16))
+#       api_pin_binary = "{:08b}".format(int(api_pin.encode('utf-8').hex(),16))
+#       a = Wallet_API.objects.filter(api_key=api_key_binary.encode(),
+#         api_pin=api_pin_binary.encode()).order_by('date_updated').first()
+#     else:
+#       return JsonResponse({'success':False,
+#         "error":"Please Enter API_Key and API_PIN"})
+#     session_id = secrets.token_hex(16)
+#     w=Wallet_Sessions(wallet_id=a.wallet_id,
+#       expiry=now_plus_10,
+#       session_id=session_id)
+#     w.save()
+#     return JsonResponse({'success':True,
+#       'session_id':session_id})
 
 
 @csrf_exempt
@@ -410,8 +406,7 @@ def transfer_funds(request,amount):
         'sent':(float(amount)-(0.015*float(amount)))})
     except Exception as e:
       logger.error(f"[{datetime.now()}] [transfer_funds] [{api_key_}] [{api_pin_}] [{to_address_}] {e} ")
-      return JsonResponse({'success':False,
-          "error":"Internal Server Error, Please contact support"})
+      return HttpResponse(status=500)
 
 
 @csrf_exempt
@@ -443,8 +438,7 @@ def details_long(request):
               "amount":a.amount
               })      
     except:
-      return JsonResponse({'success':False,
-        'Error':'Run /api endpoint to generate API KEY and PIN'})
+      return HttpResponse(status=500)
 
 @csrf_exempt
 def details_short(request):
@@ -454,33 +448,32 @@ def details_short(request):
     if name=='NoName' or email=='NoEmail':
       return JsonResponse({'success':False,
         "error":"Please Enter Name and Email"})
-    # try:
-    w=Wallet.objects.filter(name=name,
-      email=email).order_by('date_created').first()
-    a=Wallet_Account.objects.filter(wallet_id=w.wallet_id).order_by('date_updated').first()
-    k=Wallet_Keys.objects.filter(wallet_id=w.wallet_id).order_by('date_updated').first()
-    ad=Wallet_Address.objects.filter(wallet_id=w.wallet_id).order_by('date_updated').first()
-    private_key_=k.private_key
-    private_key=unobscure(private_key_.encode())
-    public_key_=k.public_key
-    public_key=unobscure(public_key_.encode())
-    private_key_wif_=k.private_key_wif
-    private_key_wif=unobscure(private_key_wif_.encode())
-    address_=ad.address
-    address=unobscure(address_.encode())
-    return JsonResponse({'success':True,
-            "wallet_id":w.wallet_id,
-            "name":w.name, "email":w.email,
-            "private_key":private_key.decode(),
-            "public_key":public_key.decode(),
-            "private_key_wif":private_key_wif.decode(),
-            "address":address.decode(),
-            "amount":a.amount
-            })    
-    # except Exception as e:
-    #   logger.error(f"[{datetime.now()}] [details_short] [{name}] [{email}] {e} ")
-    #   return JsonResponse({'success':False,
-    #       "error":"Internal Server Error, Please contact support"})
+    try:
+      w=Wallet.objects.filter(name=name,
+        email=email).order_by('date_created').first()
+      a=Wallet_Account.objects.filter(wallet_id=w.wallet_id).order_by('date_updated').first()
+      k=Wallet_Keys.objects.filter(wallet_id=w.wallet_id).order_by('date_updated').first()
+      ad=Wallet_Address.objects.filter(wallet_id=w.wallet_id).order_by('date_updated').first()
+      private_key_=k.private_key
+      private_key=unobscure(private_key_.encode())
+      public_key_=k.public_key
+      public_key=unobscure(public_key_.encode())
+      private_key_wif_=k.private_key_wif
+      private_key_wif=unobscure(private_key_wif_.encode())
+      address_=ad.address
+      address=unobscure(address_.encode())
+      return JsonResponse({'success':True,
+              "wallet_id":w.wallet_id,
+              "name":w.name, "email":w.email,
+              "private_key":private_key.decode(),
+              "public_key":public_key.decode(),
+              "private_key_wif":private_key_wif.decode(),
+              "address":address.decode(),
+              "amount":a.amount
+              })    
+    except Exception as e:
+      logger.error(f"[{datetime.now()}] [details_short] [{name}] [{email}] {e} ")
+      return HttpResponse(status=500)
 
 
 
