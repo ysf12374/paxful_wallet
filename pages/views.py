@@ -137,7 +137,7 @@ def hash160(hex_str):
     rip.update( sha.digest() )
     return rip.hexdigest()  
 
-def address_(public_key_hex):
+def generate_address(public_key_hex):
     key_hash = '00' + hash160(public_key_hex)    
     sha = hashlib.sha256()
     sha.update( bytearray.fromhex(key_hash) )
@@ -201,10 +201,10 @@ def generate(request):
       private_key_hex = obscure(private_key_hex_)
       public_key_hex = obscure(public_key_hex_)
       private_key_wif_hex = obscure(private_key_wif_hex_.encode())
-      address_str=address_(public_key_hex_)
-      address_byt=obscure(address_str.encode())
+      generate_addressstr=generate_address(public_key_hex_)
+      generate_addressbyt=obscure(generate_addressstr.encode())
       w_add=Wallet_Address.objects.create(wallet_id=b.wallet_id,
-        address=address_byt.decode(),
+        address=generate_addressbyt.decode(),
         date_updated=datetime.now())
       w_add.save()
       logger.info(f"[{datetime.now()}] [saved] [{b.wallet_id}] in Wallet_Address Table")
@@ -231,7 +231,7 @@ def generate(request):
               "private_key":private_key_hex_.decode(),
               "public_key":public_key_hex_.decode(),
               "private_key_wif":private_key_wif_hex_,
-              "address":address_str})
+              "address":generate_addressstr})
     except Exception as e:
       logger.error(f"[{datetime.now()}] [regenerate] [{name}] [{email}] {e} ")
       return HttpResponse(status=500)
@@ -279,11 +279,11 @@ def api(request):
 @csrf_exempt
 def transfer_funds(request,amount):
     api_pin_=request.GET.get('API_PIN', 'NoPin')
-    to_address_=request.GET.get('Recepient_Address', 'NoAddress')
+    to_generate_address=request.GET.get('Recepient_Address', 'NoAddress')
     pub_key_=request.GET.get('Public_Key', 'NoPublicKey')
     try:
       api_pin=obscure(api_pin_.encode())
-      to_address=obscure(to_address_.encode())
+      to_address=obscure(to_generate_address.encode())
       pub_key=obscure(pub_key_.encode())
       if (api_pin_!='NoPin' and pub_key_!='NoPublicKey'):
 
@@ -311,7 +311,7 @@ def transfer_funds(request,amount):
       elif pub_key_!='NoPublicKey':
         return JsonResponse({'success':False,
           "error":"Please Enter Public_Key"})
-      elif to_address_=='NoAddress':
+      elif to_generate_address=='NoAddress':
         return JsonResponse({'success':False,
           "error":"Please Enter Recepient_Address"})
       else:
@@ -363,7 +363,7 @@ def transfer_funds(request,amount):
         'from':f.wallet_id,
         'sent':(float(amount)-(0.015*float(amount)))})
     except Exception as e:
-      logger.error(f"[{datetime.now()}] [transfer_funds] [{api_key_}] [{api_pin_}] [{to_address_}] {e} ")
+      logger.error(f"[{datetime.now()}] [transfer_funds] [{api_key_}] [{api_pin_}] [{to_generate_address}] {e} ")
       return HttpResponse(status=500)
 
 
@@ -420,8 +420,8 @@ def details_short(request):
       public_key=unobscure(public_key_.encode())
       private_key_wif_=k.private_key_wif
       private_key_wif=unobscure(private_key_wif_.encode())
-      address_=ad.address
-      address=unobscure(address_.encode())
+      generate_address=ad.address
+      address=unobscure(generate_address.encode())
       logger.info(f"[{datetime.now()}] [queried] [{w.wallet_id}]")
 
       return JsonResponse({'success':True,
@@ -467,15 +467,15 @@ def details_short(request):
 #       wallet=Wallet.objects.filter(wallet_id=a.wallet_id).order_by('date_created').first()
 #       b = Wallet_Keys.objects.filter(wallet_id=a.wallet_id).order_by('date_created').first()
 #       public_key_=b.public_key
-#       address_str=address_(public_key_.encode())
-#       address_byt=obscure(address_str.encode())
+#       generate_addressstr=generate_address(public_key_.encode())
+#       generate_addressbyt=obscure(generate_addressstr.encode())
 #       w=Wallet_Address(wallet_id=a.wallet_id,
-#         address=address_byt.decode(),
+#         address=generate_addressbyt.decode(),
 #         date_updated=datetime.now())
 #       w.save()
 #       wallet.wallet_address.add(w)
 #       return JsonResponse({'success':True,
-#         'address':address_str})
+#         'address':generate_addressstr})
 #     except Exception as e:
 #       logger.error(f"[{datetime.now()}] [api] [{api_key_}] [{api_pin_}] {e} ")
 #       return HttpResponse(status=500)
