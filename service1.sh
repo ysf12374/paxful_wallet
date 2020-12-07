@@ -1,7 +1,7 @@
 
 #set -x
 
-PID=`ps ax | grep twitter_user.py`
+PID=`ps ax | grep manage.py`
 option="${1}"
 
 
@@ -33,7 +33,7 @@ start)
      echo " app is running please stop it first"
      else
 
-     nohup python3.7 twitter_user.py &
+     nohup python3.7 manage.py runserver 127.0.0.1:8000 &
      sleep 1
      fi
           ;;
