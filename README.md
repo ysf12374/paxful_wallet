@@ -39,23 +39,23 @@ GET /api/v1/wallet/create
     Call this endpoint to create a new wallet
 ##### Responses
 
-```json
+```javascript
 {
-"success":False,
+'success':False,
 "error":"Please Enter Name and Email"
 }
 ```
-```json
+```javascript
 {
-"success":False,
+'success':False,
 "error":"Please Enter New Name and Email - [Already Exists]"
 }
 ```
-```json
+```javascript
 {
-"success":True,
-"wallet_id":"wallet_id",
-"name":"name", "email":"email"
+'success':True,
+"wallet_id":wallet_id,
+"name":name, "email":email
 }
 ```
 #### - /api/v1/wallet/generate
@@ -70,19 +70,19 @@ GET /api/v1/wallet/generate
     Call this endpoint to generatae the keys
 ##### Responses
 
-```json
+```javascript
 {
-"success":False,
+'success':False,
 "error":"Please Enter Name and Email"
 }
 ```
-```json
+```javascript
 {
-"success":False,
+'success':False,
 "error":"Name and Email doesnt exist"
 }
 ```
-```json
+```javascript
 {
     "success": true,
     "wallet_id": "219058582399425",
@@ -108,22 +108,22 @@ GET /api/v1/wallet/api
     Call this endpoint to generatae the API Key and PIN
 ##### Responses
 
-```json
+```javascript
 {
-"success":False,
+'success':False,
 "error":"Please Enter Name and Email"
 }
 ```
-```json
+```javascript
 {
-"success":False,
+'success':False,
 "error":"Private Key doesnt match the wallet"
 }
 ```
-```json
-{"success":True,
-"API Key":"ZxIvghm4nSdeXuJp8C-A8twrAvDCYxLoeSo3IkM4uUn0I6sXBrSThi4oHkS0Bcc_AG1pTHYvoEI3iW_dfikxm4olemgVYagHvYtC2rkMT4AUDu8d66a___XpINmPRwox",
-"API PIN":"cac3347f414a60f54df4a731087d2c62"
+```javascript
+{'success':True,
+'API Key':"ZxIvghm4nSdeXuJp8C-A8twrAvDCYxLoeSo3IkM4uUn0I6sXBrSThi4oHkS0Bcc_AG1pTHYvoEI3iW_dfikxm4olemgVYagHvYtC2rkMT4AUDu8d66a___XpINmPRwox",
+'API PIN':"cac3347f414a60f54df4a731087d2c62
 }
 ```
 
@@ -140,62 +140,62 @@ GET /api/v1/wallet/transfer_funds/{amount}
     Call this endpoint to Transfer funds between wallets.
 ##### Responses
 
-```json
+```javascript
 {
-"success":False,
+'success':False,
 "error":"Invalid PIN"
 }
 ```
-```json
+```javascript
 {
-"success":False,
+'success':False,
 "error":"Invalid Public Key"
 }
 ```
-```json
+```javascript
 {
-"success":False,
+'success':False,
 "error":"Public Key and PIN doesnt match"
 }
 ```
-```json
+```javascript
 {
-"success":False,
+'success':False,
 "error":"Please Enter Public_Key"
 }
 ```
-```json
+```javascript
 {
-"success":False,
+'success':False,
 "error":"Please Enter Recepient_Address"
 }
 ```
-```json
+```javascript
 {
-"success":False,
+'success':False,
 "error":"Please Enter API_PIN"
 }
 ```
-```json
+```javascript
 {
-"success":False,
+'success':False,
 "error":"Invalid Recepient_Address"
 }
 ```
-```json
+```javascript
 {
-"success":False,
+'success':False,
 "error":"Cannot Send to Self"
 }
 ```
-```json
+```javascript
 {
-"success":False,
+'success':False,
 "error":"Not Enough Funds"
 }
 ```
-```json
-{"success":True,
+```javascript
+{'success':True,
 'to':34249417035203,
 'from':34249417012345,
 'sent':19.7
@@ -214,15 +214,15 @@ GET /api/v1/wallet/details_long
     Call this endpoint to get your wallet details
 ##### Responses
 
-```json
+```javascript
 {
-"success":False,
+'success':False,
 "error":"Please Enter Name and Email"
 }
 ```
 
-```json
-{"success":True,
+```javascript
+{'success':True,
 "wallet_id": "219058582399425",
 "name": "Mark Henry",
 "email": "mark@henry.com",
@@ -230,9 +230,9 @@ GET /api/v1/wallet/details_long
 "public_key": "2UcifxLWA53cHLnYbQbfPrJLH8KkNuuUK9SR",
 "private_key_wif": "5KXsd5ktydxsCfknkf5Qq4dWdYhEPzu3HMcAL5Ec7hjk7PNjSV5",
 "address": "1EdRjzGk8AWAb6xMYZGBM9GCPqAu6eZqbY"
-"API Key":"ZxIvghm4nSdeXuJp8C-A8twrAvDCYxLoeSo3IkM4uUn0I6sXBrSThi4oHkS0Bcc_AG1pTHYvoEI3iW_dfikxm4olemgVYagHvYtC2rkMT4AUDu8d66a___XpINmPRwox",
-"API PIN":"cac3347f414a60f54df4a731087d2c62,
-"amount":100
+'API Key':"ZxIvghm4nSdeXuJp8C-A8twrAvDCYxLoeSo3IkM4uUn0I6sXBrSThi4oHkS0Bcc_AG1pTHYvoEI3iW_dfikxm4olemgVYagHvYtC2rkMT4AUDu8d66a___XpINmPRwox",
+'API PIN':"cac3347f414a60f54df4a731087d2c62,
+'amount':100
 }
 ```
 
@@ -249,15 +249,15 @@ GET /api/v1/wallet/details_short
     Call this endpoint to get your wallet details
 ##### Responses
 
-```json
+```javascript
 {
-"success":False,
+'success':False,
 "error":"Please Enter Name and Email"
 }
 ```
 
-```json
-{"success":True,
+```javascript
+{'success':True,
 "wallet_id": "219058582399425",
 "name": "Mark Henry",
 "email": "mark@henry.com",
@@ -265,7 +265,7 @@ GET /api/v1/wallet/details_short
 "public_key": "2UcifxLWA53cHLnYbQbfPrJLH8KkNuuUK9SR",
 "private_key_wif": "5KXsd5ktydxsCfknkf5Qq4dWdYhEPzu3HMcAL5Ec7hjk7PNjSV5",
 "address": "1EdRjzGk8AWAb6xMYZGBM9GCPqAu6eZqbY"
-"amount":100
+'amount':100
 }
 ```
 
