@@ -4,15 +4,9 @@ django
 django-rest_framework
 django-sslserver
 mysql-connector
-fuzzywuzzy
-datefinder
-lxml
-bs4
-ip2geotools
 wand
 mysqlclient
 django-ssl-auth
-wave
 base58
 ecdsa
 utilitybelt
