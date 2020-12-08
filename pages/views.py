@@ -124,7 +124,6 @@ def privToWif(priv) :
 
 def wifToPriv(wif) :
   ''' Produce the private ECDSA key in the form of a hex string from a WIF string ''' 
-  if verbose : print("WIF: " + wif)
   byte_str = b58decode(wif)
   byte_str_drop_last_4bytes = byte_str[0:-8]
   byte_str_drop_first_byte = byte_str_drop_last_4bytes[2:]
@@ -202,6 +201,7 @@ def generate(request):
       public_key_hex = obscure(public_key_hex_)
       private_key_wif_hex = obscure(private_key_wif_hex_.encode())
       generate_addressstr=generate_address(public_key_hex_)
+      #TODO: Create an address using SigningKey Ecdsa
       generate_addressbyt=obscure(generate_addressstr.encode())
       w_add=Wallet_Address.objects.create(wallet_id=b.wallet_id,
         address=generate_addressbyt.decode(),
@@ -281,6 +281,7 @@ def transfer_funds(request,amount):
     api_pin_=request.GET.get('API_PIN', 'NoPin')
     to_generate_address=request.GET.get('Recepient_Address', 'NoAddress')
     pub_key_=request.GET.get('Public_Key', 'NoPublicKey')
+    #TODO: MATCH THE PUBLIC KEY WITH THE PRIVATE KEY USING A SIGNATURE
     try:
       api_pin=obscure(api_pin_.encode())
       to_address=obscure(to_generate_address.encode())
