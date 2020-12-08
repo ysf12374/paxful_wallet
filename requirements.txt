@@ -13,3 +13,4 @@ utilitybelt
 psycopg2
 gunicorn
 django-autofixture
+cryptography
