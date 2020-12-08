@@ -161,6 +161,12 @@ GET /api/v1/wallet/transfer_funds/{amount}
 ```javascript
 {
 'success':False,
+"error":"Private Key WIF is invalid"
+}
+```          
+```javascript
+{
+'success':False,
 "error":"Please Enter Public_Key"
 }
 ```
