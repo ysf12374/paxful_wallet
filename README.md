@@ -306,7 +306,7 @@ Run directly through terminal->
 $ pip install virtualenv
 $ virtualenv env
 $ source ./env/bin/activate
-$ pip intall -r requirements.txt
+$ pip install -r requirements.txt
 $ python manage.py makemigrations pages
 $ python manage.py migrate
 $ python manage.py loaddata ./wallet/fixture/data.json
