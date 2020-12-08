@@ -24,7 +24,7 @@ A wallet consists of the following:
 }
 ```
 # Database Schema
-![alt text](https://github.com/ysf12374/paxful_wallet/blob/main/database_model.png?raw=true)
+![alt text](https://github.com/ysf12374/paxful_wallet/blob/main/database.png?raw=true)
 
 # API Queries
 #### - /api/v1/wallet/create
