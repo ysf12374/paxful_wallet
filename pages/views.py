@@ -42,8 +42,9 @@ from cryptography.fernet import Fernet
 
 import zlib
 from base64 import urlsafe_b64encode as b64e, urlsafe_b64decode as b64d
+logging.basicConfig(filename='app.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
 
-logger = logging.getLogger(__name__)
+logger = logging
 
 def obscure(data: bytes) -> bytes:
     return b64e(zlib.compress(data, 9))
@@ -254,6 +255,11 @@ def api(request):
       else:
         return JsonResponse({'success':False,
           "error":"Please Enter WIF "})
+      private_key_=k.private_key
+      private_key_check_ = wifToPriv(private_key_wif_hex_.encode())
+      if not unobscure((private_key_).encode()).decode()==private_key_check_:
+        return JsonResponse({'success':False,
+          "error":"Private Key WIF is invalid"})
       if a.wallet_id!=k.wallet_id:
         return JsonResponse({'success':False,
           "error":"Private Key doesnt match the wallet"})
