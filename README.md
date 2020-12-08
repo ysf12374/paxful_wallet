@@ -6,10 +6,10 @@ A wallet consists of the following:
   - wallet_id: a unique id for wallet
   - name: Name of the wallet holder
   - email: email of the wallet holder
-  - private_key:  a 256-bit number for wallet
-  - public_key: a unique id for wallet
-  - private_key_wif: Base58 Wallet Import format
-  - address: identifier of 26-35 alphanumeric characters, beginning with the number 1 , 3 or bc1 
+  - private_key:  a single unsigned 256 bit integer (32 bytes) for wallet
+  - public_key: a number calculated using the above private key
+  - private_key_wif: Base58 Wallet Import format of the private key
+  - address: an identifier of 26-35 alphanumeric characters, beginning with the number 1 , 3 or bc1 
 
 ```json
 {
