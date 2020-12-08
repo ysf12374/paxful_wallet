@@ -121,6 +121,12 @@ GET /api/v1/wallet/api
 }
 ```
 ```javascript
+{
+'success':False,
+"error":"Private Key WIF is invalid"
+}
+```   
+```javascript
 {'success':True,
 'API Key':"ZxIvghm4nSdeXuJp8C-A8twrAvDCYxLoeSo3IkM4uUn0I6sXBrSThi4oHkS0Bcc_AG1pTHYvoEI3iW_dfikxm4olemgVYagHvYtC2rkMT4AUDu8d66a___XpINmPRwox",
 'API PIN':"cac3347f414a60f54df4a731087d2c62
@@ -157,13 +163,7 @@ GET /api/v1/wallet/transfer_funds/{amount}
 'success':False,
 "error":"Public Key and PIN doesnt match"
 }
-```
-```javascript
-{
-'success':False,
-"error":"Private Key WIF is invalid"
-}
-```          
+```       
 ```javascript
 {
 'success':False,
